@@ -8,27 +8,38 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import web.dao.RoleDao;
 import web.dao.UserDao;
 import web.model.User;
 
+import web.model.Role;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
+    private final RoleDao roleDao;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, @Lazy PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDao userDao, @Lazy PasswordEncoder passwordEncoder, RoleDao roleDao) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
+        this.roleDao = roleDao;
     }
 
     @Transactional
     @Override
-    public void saveUser(User user) {
+    public void saveUser(User user, long[] listRoles) {
+        Set<Role> rolesSet = new HashSet<>();
+        for (long listRole : listRoles) {
+            rolesSet.add(roleDao.getRoleById(listRole));
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(rolesSet);
         userDao.saveUser(user);
     }
 
@@ -40,7 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Transactional
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user, long[] role_id) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.updateUser(user);
     }

@@ -27,7 +27,7 @@ public class RoleServiceImpl implements RoleService{
     public Set<Role> findRolesByName(String roleName) {
         Set<Role> roles = new HashSet<>();
         for (Role role : getAllRoles()) {
-            if (roleName.contains(role.getName())) {
+            if (roleName.contains(role.getRoleName())) {
                 roles.add(role);
             }
         }
