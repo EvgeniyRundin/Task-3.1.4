@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import web.dao.RoleDao;
 import web.model.Role;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -19,18 +17,7 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public List<Role> getAllRoles() {
+    public Set<Role> getAllRoles() {
         return roleDao.getAllRoles();
-    }
-
-    @Override
-    public Set<Role> findRolesByName(String roleName) {
-        Set<Role> roles = new HashSet<>();
-        for (Role role : getAllRoles()) {
-            if (roleName.contains(role.getRoleName())) {
-                roles.add(role);
-            }
-        }
-        return roles;
     }
 }
